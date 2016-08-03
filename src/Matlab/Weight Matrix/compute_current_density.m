@@ -16,7 +16,6 @@ function [jm, jx, jy, jz] = compute_current_density(v, Mesh, mat_ref, ROI)
 
 tic
 D = Mesh.sgrad;
-Dv = D*v;
 
 sigma(1:3:3*size(mat_ref,1)) = mat_ref;
 sigma(2:3:3*size(mat_ref,1)) = mat_ref;
@@ -24,27 +23,22 @@ sigma(3:3:3*size(mat_ref,1)) = mat_ref;
 
 
 for i=1:size(v,2)
-j(:,i) = Dv(:,i).*sigma';
+
+Dv = D*v(:,i);    
+j = Dv.*sigma';
+j2 = [j(1:3:end),j(2:3:end),j(3:3:end)];
+j2 = j2(ROI,:);
+
+    jx(:,i) = j2(:,1);
+    jy(:,i) = j2(:,2);
+    jz(:,i) = j2(:,3);
+
+for j=1:size(j2,1)
+     jm(j,i) = norm(j2(j,:),2);
 end
 
-for i=1:size(v,2)
-j2{i} = [j(1:3:end,i),j(2:3:end,i),j(3:3:end,i)];
-end
+clear Dv j j2
 
-for i = 1:size(v,2)
-    j2{i} = j2{i}(ROI,:);
-end
-
-for i = 1:size(v,2)
-    jx(:,i) = j2{i}(:,1);
-    jy(:,i) = j2{i}(:,2);
-    jz(:,i) = j2{i}(:,3);
-end
-
-for k=1:size(v,2)
-    for i=1:size(j2{1,1},1)
-        jm(i,k) = norm(j2{1,k}(i,:),2);
-    end
 end
 toc
 
