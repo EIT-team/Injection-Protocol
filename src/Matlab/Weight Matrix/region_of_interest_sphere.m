@@ -1,4 +1,4 @@
-function [ROI, ROI_nodes] = region_of_interest_thal(Mesh)
+function [ROI, ROI_nodes] = region_of_interest_sphere(Mesh,ROI_centre,ROI_radius)
 %Finds elements that are in a specified region of interest in brain
 %Finds elements that lie in a sphere about ROI centre
 
@@ -36,15 +36,20 @@ function [ROI, ROI_nodes] = region_of_interest_thal(Mesh)
 
 %For cylindrical mesh
 
-ROI_centre = [150,100,150]/1000;
-ROI_radius = 10/1000;
+% ROI_centre = [150,100,150]/1000;
+% ROI_radius = 10/1000;
 
 ROI = zeros(size(Mesh.tri,1),1);
 
-for i=1:size(Mesh.tri,1)
-    element_centre = mean(Mesh.vtx(Mesh.tri(i,:),:));
+
+cnts=(Mesh.vtx(Mesh.tri(:,1),:)+Mesh.vtx(Mesh.tri(:,2),:)+Mesh.vtx(Mesh.tri(:,3),:)+Mesh.vtx(Mesh.tri(:,4),:))./4;
+
+
+
+for iElem=1:size(Mesh.tri,1)
+    element_centre = cnts(iElem,:);
     if norm((element_centre-ROI_centre),2) < ROI_radius
-        ROI(i) = i;
+        ROI(iElem) = iElem;
     end
 end
 
@@ -55,7 +60,7 @@ ROI_nodes = Mesh.tri(ROI);
 ROI_nodes = reshape(ROI_nodes,size(ROI_nodes,1)*size(ROI_nodes,2),1);
 ROI_nodes = unique(ROI_nodes);
 
-
+end
 
 
 
