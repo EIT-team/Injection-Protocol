@@ -1,8 +1,11 @@
-%%
-clear all
-load('..\..\..\resources\data\Direction weight matrix\direction_rat_VPL_LH.mat');
+function [prt] = opt_angle(w_mag,w_x,w_y,w_z,n,n_angles,start_method)
 
-start_method = 'A'; %A for first start search, B for alternative start of search
+
+%%
+% clear all
+% load('..\..\..\resources\data\Direction weight matrix\direction_rat_VPL_LH.mat');
+
+% start_method = 'A'; %A for first start search, B for alternative start of search
 %A good way to decide which option is better is to look at total_j and
 %zero_bins - want total_j to be as big as possible but don't want too many
 %zero bins
@@ -15,7 +18,7 @@ start_method = 'A'; %A for first start search, B for alternative start of search
 % Y = w_y(1:n,1:n);
 % Z = w_z(1:n,1:n);
 
-n = 114;
+% n = 114;
 
 % M = EX.w_mag(1:n,1:n);
 % X = EX.w_x(1:n,1:n);
@@ -50,7 +53,7 @@ end
 %Define the number of angles you want to segment into
 %Number of bins will be n_angle*n_angle as we segment in both theta and phi
 %direction
-n_angles = 9;
+% n_angles = 9;
 d_angle = 90/n_angles;
 idx=cell(n_angles,n_angles);
 %Find all protocols that lie in each bin
@@ -283,4 +286,11 @@ end
 daspect([1 1 1]);
 axis vis3d
 set(gca,'XDir','rev','YDir','rev');
+
+
+
+
+
+
+end
 
