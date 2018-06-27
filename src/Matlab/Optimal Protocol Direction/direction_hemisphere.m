@@ -1,3 +1,4 @@
+<<<<<<< HEAD:src/Matlab/Optimal Protocol Direction/angle_with_order.m
 %%
 clear all
 load('..\..\..\resources\data\Direction weight matrix\direction_rat_VPL_LH.mat');
@@ -16,6 +17,9 @@ start_method = 'A'; %A for first start search, B for alternative start of search
 % Z = w_z(1:n,1:n);
 
 n = 114;
+=======
+n = 52;
+>>>>>>> master:src/Matlab/Optimal Protocol Direction/direction_hemisphere.m
 
 % M = EX.w_mag(1:n,1:n);
 % X = EX.w_x(1:n,1:n);
@@ -27,6 +31,7 @@ X = w_x(1:n,1:n);
 Y = w_y(1:n,1:n);
 Z = w_z(1:n,1:n);
 
+<<<<<<< HEAD:src/Matlab/Optimal Protocol Direction/angle_with_order.m
 w_cart=cell(n,n);
 rho=zeros(n,n);
 phi=zeros(n,n);
@@ -35,17 +40,31 @@ w_spher=cell(n,n);
 
 %Convert from cartesian to spherical coordinates
 %Take abs of all values as we only want to look in 1/8 of sphere
+=======
+
+>>>>>>> master:src/Matlab/Optimal Protocol Direction/direction_hemisphere.m
 for j = 1:n
     for k = 1:n
         w_cart{j,k} = [X(j,k),Y(j,k),Z(j,k)];
         rho(j,k) = norm([X(j,k), Y(j,k), Z(j,k)],2);
-        phi(j,k) = atan(abs(Y(j,k))/abs(X(j,k)))*(180/pi);
-        theta(j,k) = acos(abs(Z(j,k))/rho(j,k))*(180/pi);
+        
+        if X(j,k) < 0
+            X(j,k) = -1*X(j,k);
+            Y(j,k) = -1*Y(j,k);
+            Z(j,k) = -1*Z(j,k);
+        phi(j,k) = atan((X(j,k))/(Y(j,k)))*(180/pi);
+        theta(j,k) = acos((Z(j,k))/rho(j,k))*(180/pi);
+     
+        else
+        phi(j,k) = atan((X(j,k))/(Y(j,k)))*(180/pi);
+        theta(j,k) = acos((Z(j,k))/rho(j,k))*(180/pi);
+    end
         
         w_spher{j,k} = [rho(j,k),phi(j,k),theta(j,k)];
     end
 end
 
+<<<<<<< HEAD:src/Matlab/Optimal Protocol Direction/angle_with_order.m
 %%
 %Define the number of angles you want to segment into
 %Number of bins will be n_angle*n_angle as we segment in both theta and phi
@@ -57,16 +76,33 @@ idx=cell(n_angles,n_angles);
 for iphi = 1:n_angles
     for itheta = 1:n_angles
         idx{iphi,itheta} = find(phi >= (iphi-1)*d_angle & phi < iphi*d_angle & theta >= (itheta - 1)*d_angle & theta < itheta*d_angle);
+=======
+
+n_angles = 6;
+d_angle = 180/n_angles;
+%phi goes from 0 to 90 and then -90 to 0
+%theta goes from  0 to 180
+
+phi_seg = [0:d_angle:90, -90:d_angle:0];
+theta_seg = [0:d_angle:180];
+
+for iphi = 1:length(phi_seg)-1
+    for itheta = 1:length(theta_seg)-1
+        idx{iphi,itheta} = find(phi >= phi_seg(iphi) & phi < phi_seg(iphi+1) & theta >= theta_seg(itheta) & theta < theta_seg(itheta+1));
+>>>>>>> master:src/Matlab/Optimal Protocol Direction/direction_hemisphere.m
     end
 end
+
+idx( all(cellfun(@isempty,idx),2), : ) = [];
+
 %%
-%Some bins don't contain any protocol lines so remove these
 idx = reshape(idx, n_angles*n_angles,1);
 rm = find(cellfun(@isempty,idx));
 idx(rm) = [];
 
 n_bins = size(idx,1);
 
+<<<<<<< HEAD:src/Matlab/Optimal Protocol Direction/angle_with_order.m
 %%
 if start_method == 'A'
     %Find the protocol with the maximum magnitude in each bin and sort from
@@ -106,6 +142,17 @@ end
 %they are all independent
 
 %Store value of total current density in each bin
+=======
+
+for i = 1:n_bins
+    [R,C] = ind2sub(size(theta), idx{i,1}(:));
+    diff_elec = unique([R;C]);
+    elec{i,1} = diff_elec;
+end
+
+[~,I] = sort(cellfun(@length,elec));
+
+>>>>>>> master:src/Matlab/Optimal Protocol Direction/direction_hemisphere.m
 j_bins = zeros(n_bins,1);
 % prot=zeros(n_bins,2);
 for iProt = 1:n_bins
@@ -141,10 +188,6 @@ for iProt = 1:n_bins
 end
 
 %%
-%Now fill out the rest of the protocol
-%Look at the bins that have the smallest current density and add to these
-%to try and make magnitude as evenly spread out as possible
-
 for iProt = n_bins:n-1
     %    for iProt = 1:n-1
     
@@ -215,6 +258,7 @@ for i= 1:n-1
 end
 
 %%
+<<<<<<< HEAD:src/Matlab/Optimal Protocol Direction/angle_with_order.m
 %Plot the vectors
 figure
 for i = 1:n-1
@@ -229,6 +273,16 @@ figure
 for i = 1:n-1
     quiver3(0,0,0,abs(w_x(prt(i,1),prt(i,2))/rho(prt(i,1),prt(i,2))), abs(w_y(prt(i,1),prt(i,2))/rho(prt(i,1),prt(i,2))), abs(w_z(prt(i,1),prt(i,2))/rho(prt(i,1),prt(i,2))));
     hold on;
+=======
+figure
+for i = 3%:n-1
+    if w_x(prt(i,1),prt(i,2)) < 0
+quiver3(0,0,0,-1*(w_x(prt(i,1),prt(i,2))/rho(prt(i,1),prt(i,2))),-1*(w_y(prt(i,1),prt(i,2))/rho(prt(i,1),prt(i,2))),-1*(w_z(prt(i,1),prt(i,2))/rho(prt(i,1),prt(i,2))));
+    else
+        quiver3(0,0,0,(w_x(prt(i,1),prt(i,2))/rho(prt(i,1),prt(i,2))),(w_y(prt(i,1),prt(i,2))/rho(prt(i,1),prt(i,2))),(w_z(prt(i,1),prt(i,2))/rho(prt(i,1),prt(i,2))));
+    end
+hold on;
+>>>>>>> master:src/Matlab/Optimal Protocol Direction/direction_hemisphere.m
 end
 
 [x, y, z] = sphere(128);
@@ -239,6 +293,7 @@ shading interp
 daspect([1 1 1]);
 axis vis3d
 set(gca,'XDir','rev','YDir','rev');
+
 %%
 %Plots a heat map on eighth sphere
 %N.B have changed contents of sphere3D so the colour scale is correct
@@ -258,19 +313,20 @@ else
 end
 
 j_idx = reshape(j_idx, n_angles, n_angles);
+<<<<<<< HEAD:src/Matlab/Optimal Protocol Direction/angle_with_order.m
 
+=======
+>>>>>>> master:src/Matlab/Optimal Protocol Direction/direction_hemisphere.m
 
 %%
 coord = zeros(n_angles+1,n_angles+1);
 coord(1:end-1,1:end-1) = j_idx;
 figure;
-[xout,yout,zout,cout]=sphere3d(coord,0,pi/2,0,pi/2,1,1, 'surf',.000001);
+[xout,yout,zout,cout]=sphere3d(coord,0,pi,0,pi,1,1, 'surf',.0000000000001); %original .000001
 
 cout = cout(2:end,1:end-1);
 
-
 %%
-% Really haccky
 figure;
 for ix = 1:n_angles
     for iy = 1:n_angles
