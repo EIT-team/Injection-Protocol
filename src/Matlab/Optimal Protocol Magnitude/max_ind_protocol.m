@@ -10,17 +10,7 @@ function [Protocol] =  max_ind_protocol(w)
 
 %%
 %First sort the protocol lines in order of maximum current density of ROI
-i=1;
-T = triu(w);
-while sum(T(:)) ~= 0
-    [~, loc] = max(T(:));
-    [R,C] = ind2sub(size(T),loc);
-    prot(i,1) = R;
-    prot(i,2) = C;
-    
-    T(R,C) = 0;
-    i = i+ 1;
-end
+[prot,cd]=sort_protocol(w);
 
 
 %%
