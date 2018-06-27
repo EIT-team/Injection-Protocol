@@ -12,14 +12,14 @@ function [Protocol] =  max_ind_protocol(w)
 %First sort the protocol lines in order of maximum current density of ROI
 i=1;
 T = triu(w);
-while sum(T(:)) ~= 0;
-[~, loc] = max(T(:));
-[R,C] = ind2sub(size(T),loc);
-prot(i,1) = R;
-prot(i,2) = C;
-
-T(R,C) = 0;
-i = i+ 1;
+while sum(T(:)) ~= 0
+    [~, loc] = max(T(:));
+    [R,C] = ind2sub(size(T),loc);
+    prot(i,1) = R;
+    prot(i,2) = C;
+    
+    T(R,C) = 0;
+    i = i+ 1;
 end
 
 
@@ -29,7 +29,7 @@ end
 n = size(w,1);
 
 Protocol=[];
-elec = zeros(n,1); 
+elec = zeros(n,1);
 
 while size(prot,1) > 0
     Protocol = [Protocol; prot(1,:)];
@@ -49,14 +49,15 @@ while size(prot,1) > 0
     for j = 1:size(A,1)
         for i = 1:size(prot,1)
             if prot(i,1) == A(j) || prot(i,2) == A(j)
-             prot(i,:) = 0;
+                prot(i,:) = 0;
             end
         end
-    
+        
     end
-     
-   B = find(prot(:,1) ~=0);
-   prot = prot(B,:);
-   elec = zeros(n,1);
     
+    B = find(prot(:,1) ~=0);
+    prot = prot(B,:);
+    elec = zeros(n,1);
+    
+end
 end
