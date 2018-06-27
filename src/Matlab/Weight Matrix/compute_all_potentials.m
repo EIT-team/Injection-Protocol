@@ -9,10 +9,10 @@ function [v] = compute_all_potentials(vm, n, i, el)
 %        el      total number of electrodes
 %
 % output: v      potential resulting from all combinations of electrodes
-%                between reference and others 
-%     
+%                between reference and others
+%
 
-for k = n:el-1;
-v(:,k-(n-1)) = vm(:,i) - vm(:,k); %e.g 2 -> 3, 2 -> 4
+for k = n:el-1
+    v(:,k-(n-1)) = vm(:,i) - vm(:,k); %e.g 2 -> 3, 2 -> 4
 end
-
+end
