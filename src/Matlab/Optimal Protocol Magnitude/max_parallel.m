@@ -1,4 +1,4 @@
-function [maxprot,maxcd] = max_parallel(w,nInj)
+function [maxprot,prot_all,cdd] = max_parallel(w,nInj)
 %MAX_PARALLEL Finds protocol with highest current density in ROI with no
 %repeated electrodes - for parallel injection
 %%
@@ -8,6 +8,7 @@ function [maxprot,maxcd] = max_parallel(w,nInj)
 nRows=size(protfull,1);
 cdd=zeros(nRows,1);
 prot_idx=zeros(nRows,nInj);
+prot_all=zeros(nInj,2,nRows);
 
 % for each potential injection, find the best non repeating pairs
 for iRow=1:nRows
@@ -17,6 +18,9 @@ for iRow=1:nRows
     prot_idx(iRow,:)=find(ismember(protfull,pout,'rows'));
     
     cdd(iRow)=sum(cd(prot_idx(iRow,:)));
+    pout=sortrows(pout);
+    
+    prot_all(:,:,iRow)=pout;
     
 end
 %% find the best combination
@@ -24,6 +28,17 @@ end
 [maxcd,maxidx]=max(cdd);
 
 maxprot=protfull(prot_idx(maxidx,:)',:);
+
+%% remove non unique ones
+
+%sort first
+[cdd,c_idx]=sort(cdd,'descend');
+prot_all=prot_all(:,:,c_idx);
+
+
+[cdd, c_idx]=(unique(cdd,'stable'));
+
+prot_all=prot_all(:,:,c_idx);
 
 
 end

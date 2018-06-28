@@ -34,8 +34,6 @@ for j = 1:n
     end
 end
 
-
-n_angles = 6;
 d_angle = 180/n_angles;
 %phi goes from 0 to 90 and then -90 to 0
 %theta goes from  0 to 180
@@ -95,7 +93,7 @@ for iProt = 1:n_bins
         M(prot(iCount,2),prot(iCount,1)) = 0;
     end
     
-    A = find(count >= 2);
+    A = find(count >= 1);
     
     M(A,:) = 0;
     M(:,A) = 0;
