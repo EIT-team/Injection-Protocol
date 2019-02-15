@@ -93,7 +93,7 @@ for iProt = 1:n_bins
         M(prot(iCount,2),prot(iCount,1)) = 0;
     end
     
-    A = find(count >= 1);
+    A = find(count >= 2);
     
     M(A,:) = 0;
     M(:,A) = 0;

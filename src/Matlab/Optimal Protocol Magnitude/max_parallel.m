@@ -14,11 +14,12 @@ prot_all=zeros(nInj,2,nRows);
 for iRow=1:nRows
     
     pout = findInjs(iRow,protfull,nInj);
+    pout=sortrows(pout);
     
     prot_idx(iRow,:)=find(ismember(protfull,pout,'rows'));
     
     cdd(iRow)=sum(cd(prot_idx(iRow,:)));
-    pout=sortrows(pout);
+    
     
     prot_all(:,:,iRow)=pout;
     
@@ -27,7 +28,7 @@ end
 
 [maxcd,maxidx]=max(cdd);
 
-maxprot=protfull(prot_idx(maxidx,:)',:);
+maxprot=sortrows(protfull(prot_idx(maxidx,:)',:));
 
 %% remove non unique ones
 
@@ -37,7 +38,6 @@ prot_all=prot_all(:,:,c_idx);
 
 
 [cdd, c_idx]=(unique(cdd,'stable'));
-
 prot_all=prot_all(:,:,c_idx);
 
 
@@ -57,6 +57,8 @@ prot(startpos,:)=[];
 for iInj = 2:nInj
     %find protocol lines which have only unusued electrodes
     prot_cand=~any(ismember(prot,pout),2);
+    %as list is sorted, we can take the first unused one as this will be
+    %the max
     Inj_idx=find(prot_cand,1);
     pout(iInj,:)=prot(Inj_idx,:);
 end
